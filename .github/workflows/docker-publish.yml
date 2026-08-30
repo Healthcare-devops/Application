@@ -35,4 +35,4 @@ jobs:
       - name: Push Docker Image
         run: |
           docker push \
-          ${{ secrets.ECR_REGISTRY }}/maven-app:dev-${{ github.run_number }}
+          ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:dev-${{ github.run_number }}
