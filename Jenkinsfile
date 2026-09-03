@@ -51,18 +51,20 @@ stage('Unit Tests') {
         }
     }
 }
- stage('SonarQube Scan') {
+stage('SonarQube Scan') {
     steps {
         echo 'Scanning code quality...'
         withSonarQubeEnv('SonarQube') {
             dir('backend') {
-                sh 'mvn sonar:sonar -Dsonar.projectKey=maven-app'
+                sh '''
+                mvn org.sonarsource.scanner.maven:sonar-maven-plugin:5.1.0.4751:sonar \
+                  -Dsonar.projectKey=maven-app
+                '''
             }
         }
     }
 }
- 
-        stage('Docker Build') {
+ stage('Docker Build') {
             steps {
                 echo 'Building Docker image...'
                 dir('backend') { 
