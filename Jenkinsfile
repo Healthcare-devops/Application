@@ -105,6 +105,5 @@ always {
             echo 'Cleaning workspace...'
             cleanWs()
         }
-        }
     }
 }
