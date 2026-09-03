@@ -35,6 +35,11 @@ parameters {
             }
         }
 
+stage('Show Environment') {
+            steps {
+                echo "Selected environment: ${params.ENVIRONMENT}"
+            }
+        }
         stage('Maven Build') {
             steps {
                 echo 'Building application...'
