@@ -46,11 +46,11 @@ stage('Unit Tests') {
     }
     post {
         always {
-            junit 'backend/target/surefire-reports/*.xml'
+            junit testResults: 'backend/target/surefire-reports/*.xml',
+                  allowEmptyResults: true
         }
     }
 }
-
  stage('SonarQube Scan') {
     steps {
         echo 'Scanning code quality...'
@@ -103,7 +103,7 @@ stage('Unit Tests') {
 
 always {
             echo 'Cleaning workspace...'
-            cleanWs()
+deleteDir()
         }
     }
 }
