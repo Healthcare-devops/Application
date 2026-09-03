@@ -5,6 +5,13 @@
         jdk 'JDK17'
         maven 'Maven3'
     }
+parameters {
+        choice(
+            name: 'ENVIRONMENT',
+            choices: ['dev', 'staging', 'prod'],
+            description: 'Select the deployment environment'
+        )
+    }
 
     environment {
         AWS_REGION = 'us-east-1'
