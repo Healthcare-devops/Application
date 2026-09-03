@@ -14,7 +14,7 @@
 
     options {
         ansiColor('xterm')
-        timestamps()
+
     }
 
     stages {
