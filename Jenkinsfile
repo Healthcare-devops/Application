@@ -31,44 +31,48 @@
         stage('Maven Build') {
             steps {
                 echo 'Building application...'
+                dir('backend') {
                 sh 'mvn clean package -DskipTests'
             }
         }
+       }
 
-        stage('Unit Tests') {
-            steps {
-                echo 'Running unit tests...'
-                sh 'mvn test'
-            }
-            post {
-                always {
-                    junit '**/target/surefire-reports/*.xml'
-                }
+stage('Unit Tests') {
+    steps {
+        echo 'Running unit tests...'
+        dir('backend') {
+            sh 'mvn test'
+        }
+    }
+    post {
+        always {
+            junit 'backend/target/surefire-reports/*.xml'
+        }
+    }
+}
+
+ stage('SonarQube Scan') {
+    steps {
+        echo 'Scanning code quality...'
+        withSonarQubeEnv('SonarQube') {
+            dir('backend') {
+                sh 'mvn sonar:sonar -Dsonar.projectKey=maven-app'
             }
         }
-
-        stage('SonarQube Scan') {
-            steps {
-                echo 'Scanning code quality...'
-                withSonarQubeEnv('SonarQube') {
-                    sh '''
-                    mvn sonar:sonar \
-                    -Dsonar.projectKey=maven-app
-                    '''
-                }
-            }
-        }
-
+    }
+}
+ 
         stage('Docker Build') {
             steps {
                 echo 'Building Docker image...'
-                sh """
+                dir('backend') { 
+               sh """
                 docker build -t maven-app:${IMAGE_TAG} .
                 docker tag maven-app:${IMAGE_TAG} ${ECR_REPO}:${IMAGE_TAG}
                 """
             }
         }
-
+}
         stage('Push to AWS ECR') {
             steps {
                 withCredentials([[
@@ -97,9 +101,10 @@
             echo 'Pipeline failed.'
         }
 
-        always {
+always {
             echo 'Cleaning workspace...'
             cleanWs()
+        }
         }
     }
 }
